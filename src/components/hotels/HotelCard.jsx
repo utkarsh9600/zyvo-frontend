@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import "./HotelCard.css"; // Make sure this path is correct
+import "./Hotelcard.css"; // Make sure this path is correct
 
 const DEFAULT_IMAGE = "https://via.placeholder.com/400x300?text=No+Image";
 const FALLBACK_IMAGE = "https://via.placeholder.com/400x300?text=Image+Not+Found";
