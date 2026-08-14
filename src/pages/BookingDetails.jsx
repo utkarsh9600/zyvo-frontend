@@ -304,7 +304,7 @@ const BookingDetails = () => {
               <Phone size={18} />
               <span>Call us</span>
             </a>
-            <a href="mailto:support@stayza.com" style={styles.helpButton}>
+            <a href="mailto:support@Zyvo Rooms.com" style={styles.helpButton}>
               <Mail size={18} />
               <span>Email us</span>
             </a>

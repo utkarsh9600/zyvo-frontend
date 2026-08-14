@@ -23,7 +23,7 @@ const Profile = memo(() => {
 
   // Load user from localStorage if exists
   useEffect(() => {
-    const savedUser = localStorage.getItem("stayzaUser");
+    const savedUser = localStorage.getItem("Zyvo RoomsUser");
     if (savedUser) {
       const parsed = JSON.parse(savedUser);
       setUser(parsed);
@@ -32,7 +32,7 @@ const Profile = memo(() => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("stayzaUser");
+    localStorage.removeItem("Zyvo RoomsUser");
     navigate("/");
   };
 
@@ -45,7 +45,7 @@ const Profile = memo(() => {
 
   const handleSave = () => {
     setUser(formData);
-    localStorage.setItem("stayzaUser", JSON.stringify(formData));
+    localStorage.setItem("Zyvo RoomsUser", JSON.stringify(formData));
     setIsEditing(false);
   };
 

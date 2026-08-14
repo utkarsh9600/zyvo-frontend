@@ -75,7 +75,7 @@ const Register = () => {
         <div className="register__card">
           <h2 className="register__title">Create Your Royal Account 👑</h2>
           <p className="register__subtitle">
-            Join Stayza & unlock premium stays
+            Join Zyvo Rooms & unlock premium stays
           </p>
 
           <form onSubmit={handleSubmit} noValidate>

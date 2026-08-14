@@ -21,7 +21,7 @@ export default function PaymentFailed() {
   };
 
   const handleContactSupport = () => {
-    window.location.href = "mailto:support@stayza.com?subject=Payment%20Failed%20Help";
+    window.location.href = "mailto:support@Zyvo Rooms.com?subject=Payment%20Failed%20Help";
   };
 
   return (

@@ -107,7 +107,7 @@ const Invoice = () => {
       try {
         await navigator.share({
           title: `Invoice for Booking ${invoice?.bookingId}`,
-          text: `Your invoice from Stayza`,
+          text: `Your invoice from Zyvo Rooms`,
           url: window.location.href,
         });
       } catch (err) {
@@ -175,7 +175,7 @@ const Invoice = () => {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 text-white flex items-center justify-between">
             <div className="flex items-center gap-3">
               <FiHome className="w-8 h-8" />
-              <span className="text-2xl font-bold">Stayza</span>
+              <span className="text-2xl font-bold">Zyvo Rooms</span>
             </div>
             <StatusBadge status={invoice.paymentStatus} />
           </div>
@@ -287,7 +287,7 @@ const Invoice = () => {
 
         {/* Print-only header/footer (hidden on screen) */}
         <div className="hidden print:block print:mt-4 text-center text-sm text-gray-500">
-          Thank you for choosing Stayza!
+          Thank you for choosing Zyvo Rooms!
         </div>
       </div>
     </div>

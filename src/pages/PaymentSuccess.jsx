@@ -24,8 +24,8 @@ export default function PaymentSuccess() {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: "My STAYZA Booking",
-        text: `I just booked ${hotelName || "a hotel"} on STAYZA!`,
+        title: "My Zyvo Rooms Booking",
+        text: `I just booked ${hotelName || "a hotel"} on Zyvo Rooms!`,
         url: window.location.origin,
       });
     } else {

@@ -11,7 +11,7 @@ import "./SearchBar.css";
 
 /*
 ========================================================
-STAYZA – PRODUCTION READY SEARCH BAR
+Zyvo Rooms – PRODUCTION READY SEARCH BAR
 ========================================================
 Features:
 ✔ Debounced Search

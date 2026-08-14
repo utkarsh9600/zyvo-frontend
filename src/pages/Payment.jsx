@@ -83,7 +83,7 @@ export default function Payment() {
         key: import.meta.env.VITE_RAZORPAY_KEY, // Must be set in .env
         amount: orderData.order.amount,
         currency: "INR",
-        name: "STAYZA",
+        name: "Zyvo Rooms",
         description: hotel?.name || "Hotel Booking",
         order_id: orderData.order.id,
         image: "https://your-logo-url.com/logo.png", // Optional
