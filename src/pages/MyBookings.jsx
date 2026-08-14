@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import PayButton from "../components/PayButton";
+import PayButton from "../components/payButton";
 
 const API = "http://localhost:5000/api";
 
