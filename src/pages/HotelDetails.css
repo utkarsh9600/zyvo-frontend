@@ -1,0 +1,414 @@
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+  Calendar,
+  Eye,
+  XCircle,
+  Loader2,
+  Download,
+  RotateCcw,
+  Zap,
+} from "lucide-react";
+import "./MyBookings.css";
+
+const API = "http://localhost:5000";
+
+/* ================= UTILITIES ================= */
+
+const formatCurrency = (amount = 0) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+  }).format(amount);
+
+const formatDate = (date) =>
+  new Date(date).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+const calculateNights = (checkIn, checkOut) => {
+  const diff =
+    new Date(checkOut) - new Date(checkIn);
+  return diff > 0
+    ? Math.ceil(diff / (1000 * 60 * 60 * 24))
+    : 0;
+};
+
+/* ================= COMPONENT ================= */
+
+const MyBookings = () => {
+  const navigate = useNavigate();
+
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [processingPayment, setProcessingPayment] =
+    useState(null);
+  const [error, setError] = useState("");
+
+  /* ================= FETCH ================= */
+
+  const fetchBookings = async () => {
+    try {
+      const token =
+        localStorage.getItem("token");
+
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      const res = await axios.get(
+        `${API}/api/bookings/my`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setBookings(res.data.bookings || []);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      } else {
+        setError("Failed to load bookings.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  /* ================= STATS ================= */
+
+  const stats = useMemo(() => {
+    const total = bookings.length;
+
+    const spent = bookings.reduce(
+      (sum, b) => {
+        const amount =
+          b.pricing?.finalAmount ||
+          b.totalPrice ||
+          0;
+
+        const paymentStatus =
+          b.payment?.status ||
+          b.paymentStatus ||
+          "PENDING";
+
+        return paymentStatus === "PAID"
+          ? sum + amount
+          : sum;
+      },
+      0
+    );
+
+    const upcoming = bookings.filter(
+      (b) =>
+        b.status === "CONFIRMED" &&
+        new Date(b.checkIn) >
+          new Date()
+    ).length;
+
+    return { total, spent, upcoming };
+  }, [bookings]);
+
+  /* ================= PAYMENT ================= */
+
+  const handlePayNow = async (booking) => {
+    try {
+      setProcessingPayment(booking._id);
+
+      const token =
+        localStorage.getItem("token");
+
+      const res = await axios.post(
+        `${API}/api/payments/pay`,
+        { bookingId: booking._id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.data.success) {
+        alert("Payment successful 🎉");
+        fetchBookings();
+      }
+    } catch {
+      alert("Payment failed ❌");
+    } finally {
+      setProcessingPayment(null);
+    }
+  };
+
+  /* ================= CANCEL ================= */
+
+  const handleCancel = async (id) => {
+    const confirmCancel =
+      window.confirm(
+        "Are you sure you want to cancel?"
+      );
+
+    if (!confirmCancel) return;
+
+    try {
+      const token =
+        localStorage.getItem("token");
+
+      await axios.put(
+        `${API}/api/bookings/${id}/cancel`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      fetchBookings();
+    } catch {
+      alert("Cancel failed ❌");
+    }
+  };
+
+  /* ================= LOADING ================= */
+
+  if (loading) {
+    return (
+      <div className="page-center">
+        <Loader2
+          size={28}
+          className="spin"
+        />
+        Loading bookings...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page-center">
+        {error}
+      </div>
+    );
+  }
+
+  if (!bookings.length) {
+    return (
+      <div className="page-center">
+        <h3>No bookings yet</h3>
+        <button
+          onClick={() =>
+            navigate("/hotels")
+          }
+        >
+          Explore Hotels
+        </button>
+      </div>
+    );
+  }
+
+  /* ================= UI ================= */
+
+  return (
+    <div className="bookings-page">
+
+      <div className="page-header">
+        <h1>My Bookings</h1>
+
+        <div className="stats-cards">
+          <div className="stat-card">
+            <span>{stats.total}</span>
+            <small>Total</small>
+          </div>
+
+          <div className="stat-card">
+            <span>
+              {formatCurrency(
+                stats.spent
+              )}
+            </span>
+            <small>Total Spent</small>
+          </div>
+
+          <div className="stat-card">
+            <span>
+              {stats.upcoming}
+            </span>
+            <small>Upcoming</small>
+          </div>
+        </div>
+      </div>
+
+      <div className="booking-grid">
+        {bookings.map(
+          (booking) => {
+            const nights =
+              calculateNights(
+                booking.checkIn,
+                booking.checkOut
+              );
+
+            const amount =
+              booking.pricing
+                ?.finalAmount ||
+              booking.totalPrice ||
+              0;
+
+            const paymentStatus =
+              booking.payment
+                ?.status ||
+              booking.paymentStatus ||
+              "PENDING";
+
+            const isUpcoming =
+              new Date(
+                booking.checkIn
+              ) > new Date();
+
+            const isPast =
+              new Date(
+                booking.checkOut
+              ) < new Date();
+
+            return (
+              <div
+                key={booking._id}
+                className="booking-card"
+              >
+                <img
+                  src={
+                    booking.hotel
+                      ?.images?.[0] ||
+                    "/default-hotel.jpg"
+                  }
+                  alt={
+                    booking.hotel?.name
+                  }
+                />
+
+                <div className="card-content">
+                  <h3>
+                    {
+                      booking.hotel
+                        ?.name
+                    }
+                  </h3>
+
+                  <p>
+                    {formatDate(
+                      booking.checkIn
+                    )} –
+                    {formatDate(
+                      booking.checkOut
+                    )}
+                    ({nights} nights)
+                  </p>
+
+                  <div className="price">
+                    {formatCurrency(
+                      amount
+                    )}
+                  </div>
+
+                  <div className="status-row">
+                    <span className={`status ${booking.status}`}>
+                      {booking.status}
+                    </span>
+
+                    <span className={`payment ${paymentStatus}`}>
+                      {paymentStatus}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="card-actions">
+                  <button
+                    onClick={() =>
+                      navigate(
+                        `/bookings/${booking._id}`
+                      )
+                    }
+                  >
+                    <Eye size={16} />
+                  </button>
+
+                  {paymentStatus !==
+                    "PAID" &&
+                    booking.status !==
+                      "CANCELLED" && (
+                      <button
+                        onClick={() =>
+                          handlePayNow(
+                            booking
+                          )
+                        }
+                        disabled={
+                          processingPayment ===
+                          booking._id
+                        }
+                      >
+                        {processingPayment ===
+                        booking._id ? (
+                          <Loader2
+                            size={16}
+                            className="spin"
+                          />
+                        ) : (
+                          <Zap size={16} />
+                        )}
+                      </button>
+                    )}
+
+                  {isUpcoming &&
+                    booking.status ===
+                      "CONFIRMED" && (
+                      <button
+                        onClick={() =>
+                          handleCancel(
+                            booking._id
+                          )
+                        }
+                      >
+                        <XCircle size={16} />
+                      </button>
+                    )}
+
+                  {(isPast ||
+                    booking.status ===
+                      "CANCELLED") && (
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/hotels/${booking.hotel?._id}`
+                        )
+                      }
+                    >
+                      <RotateCcw size={16} />
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          }
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default MyBookings;

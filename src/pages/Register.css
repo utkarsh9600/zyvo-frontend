@@ -1,0 +1,222 @@
+/* =========================================
+   STAYZA ROOMS – REGISTER PAGE STYLES
+   Premium Glass + Luxury UI
+========================================= */
+
+:root {
+  --primary: #b91c1c;
+  --primary-dark: #7f1d1d;
+  --gold: #d4af37;
+  --bg-gradient: linear-gradient(135deg, #1e1e2f, #111827);
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --text-light: #f9fafb;
+  --text-muted: #9ca3af;
+  --danger: #ef4444;
+}
+
+/* ===== PAGE WRAPPER ===== */
+.register-page {
+  min-height: 100vh;
+  background: var(--bg-gradient);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated background glow */
+.register-page::before {
+  content: "";
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(185, 28, 28, 0.4), transparent 70%);
+  top: -100px;
+  left: -100px;
+  filter: blur(80px);
+  animation: floatGlow 6s ease-in-out infinite alternate;
+}
+
+@keyframes floatGlow {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(40px); }
+}
+
+/* ===== CARD ===== */
+.register-card {
+  width: 420px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(25px);
+  border-radius: 20px;
+  padding: 40px 35px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  color: var(--text-light);
+  position: relative;
+  z-index: 10;
+  transition: 0.4s ease;
+}
+
+.register-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8);
+}
+
+/* ===== TITLE ===== */
+.register-title {
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.register-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* ===== INPUT GROUP ===== */
+.input-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.input-group label {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 14px 15px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 14px;
+  transition: 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+}
+
+/* Password toggle icon */
+.password-toggle {
+  position: absolute;
+  right: 15px;
+  top: 38px;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+/* ===== ERROR MESSAGE ===== */
+.input-error {
+  font-size: 12px;
+  color: var(--danger);
+  margin-top: 5px;
+}
+
+/* ===== BUTTON ===== */
+.register-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.register-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(185, 28, 28, 0.6);
+}
+
+.register-btn:active {
+  transform: scale(0.98);
+}
+
+/* ===== SOCIAL LOGIN ===== */
+.social-divider {
+  margin: 25px 0 15px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  position: relative;
+}
+
+.social-divider::before,
+.social-divider::after {
+  content: "";
+  position: absolute;
+  width: 35%;
+  height: 1px;
+  background: var(--glass-border);
+  top: 50%;
+}
+
+.social-divider::before {
+  left: 0;
+}
+.social-divider::after {
+  right: 0;
+}
+
+.social-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.social-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.social-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ===== FOOTER LINK ===== */
+.register-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.register-footer a {
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .register-card {
+    width: 100%;
+    padding: 30px 20px;
+  }
+}

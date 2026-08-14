@@ -1,0 +1,290 @@
+/* app.css – World‑class global styles, 100x better than OYO */
+/* Designed for Tailwind CSS with custom extensions, dark mode, animations, and accessibility */
+
+/* ------------------------------------------------------------------
+   TAILWIND DIRECTIVES (requires Tailwind to be installed)
+------------------------------------------------------------------ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------
+   CUSTOM CSS VARIABLES (for theming beyond Tailwind)
+------------------------------------------------------------------ */
+:root {
+  /* Colors */
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-secondary: #10b981;
+  --color-accent: #8b5cf6;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  /* Neutral shades (complement Tailwind's gray) */
+  --color-bg-light: #ffffff;
+  --color-text-light: #1f2937;
+  --color-bg-dark: #111827;
+  --color-text-dark: #f9fafb;
+
+  /* Spacing */
+  --header-height: 64px;
+  --footer-height: 60px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+
+  /* Z‑index layers */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal: 1040;
+  --z-popover: 1050;
+  --z-tooltip: 1060;
+  --z-toast: 1070;
+}
+
+/* Dark mode overrides (using class strategy) */
+.dark {
+  --color-bg-light: #1f2937;
+  --color-text-light: #f9fafb;
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------
+   BASE LAYER (custom overrides after Tailwind base)
+------------------------------------------------------------------ */
+@layer base {
+  /* Smooth scrolling and better font rendering */
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+  }
+
+  /* Better focus outlines for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-900;
+  }
+
+  /* Remove default button styles and add cursor pointer */
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  /* Smooth image loading */
+  img {
+    @apply bg-gray-200 dark:bg-gray-700;
+    transition: filter var(--transition-base);
+  }
+
+  img.loading {
+    filter: blur(5px);
+  }
+
+  img.loaded {
+    filter: blur(0);
+  }
+
+  /* Link styles */
+  a {
+    @apply text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
+    transition: color var(--transition-fast);
+  }
+
+  /* Selection styling */
+  ::selection {
+    @apply bg-blue-500 text-white;
+  }
+}
+
+/* ------------------------------------------------------------------
+   COMPONENT LAYER (reusable custom component classes)
+------------------------------------------------------------------ */
+@layer components {
+  /* Card component */
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden;
+    transition: box-shadow var(--transition-base), transform var(--transition-base);
+  }
+  .card:hover {
+    @apply shadow-lg;
+  }
+
+  /* Button variants */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 dark:focus:ring-offset-gray-900;
+  }
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600;
+  }
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+  .input-error {
+    @apply border-red-500 focus:ring-red-500;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .badge-success {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+  }
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
+  }
+  .badge-error {
+    @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+  }
+
+  /* Container for main content */
+  .main-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6;
+  }
+
+  /* Section titles */
+  .section-title {
+    @apply text-2xl font-bold text-gray-900 dark:text-white mb-4;
+  }
+}
+
+/* ------------------------------------------------------------------
+   UTILITY LAYER (custom utilities)
+------------------------------------------------------------------ */
+@layer utilities {
+  /* Animations */
+  .animate-fade-in {
+    animation: fadeIn var(--transition-base) ease-in-out;
+  }
+  .animate-slide-up {
+    animation: slideUp var(--transition-base) ease-out;
+  }
+  .animate-slide-down {
+    animation: slideDown var(--transition-base) ease-out;
+  }
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
+
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Scrollbar hiding (useful for modals) */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Glassmorphism effect */
+  .glass {
+    @apply bg-white/70 dark:bg-gray-900/70 backdrop-blur-md backdrop-saturate-150;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600;
+  }
+}
+
+/* ------------------------------------------------------------------
+   KEYFRAMES (animations)
+------------------------------------------------------------------ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+
+/* ------------------------------------------------------------------
+   PRINT STYLES
+------------------------------------------------------------------ */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background-color: white;
+    color: black;
+  }
+  a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    font-weight: normal;
+  }
+}
+
+/* ------------------------------------------------------------------
+   RESPONSIVE UTILITIES (if you need custom breakpoints beyond Tailwind)
+------------------------------------------------------------------ */
+@media (max-width: 640px) {
+  .container\:mobile {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* ------------------------------------------------------------------
+   DARK MODE MEDIA PREFERENCE (optional, if using prefers-color-scheme)
+   – comment out if using class strategy (our default is .dark class)
+------------------------------------------------------------------ */
+/*
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --color-bg-light: #1f2937;
+    --color-text-light: #f9fafb;
+  }
+}
+*/
