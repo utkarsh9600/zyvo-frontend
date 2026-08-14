@@ -20,7 +20,7 @@ import {
 } from "react-icons/fi";
 import { format } from "date-fns";
 
-const API = import.meta.env.VITE_API_URL || "https://zyvo-backend-40dg.onrender.com";
+const API = import.meta.env.VITE_API_URL || "https://zyvo-backend-409g.onrender.com";
 
 // ----------------------------------------------------------------------
 // Loading Skeleton

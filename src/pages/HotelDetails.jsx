@@ -4,7 +4,7 @@ import axios from "axios";
 import ReviewSection from "../components/ReviewSection";
 import "./HotelDetails.css";
 
-const API = "https://zyvo-backend-40dg.onrender.com";
+const API = "https://zyvo-backend-409g.onrender.com";
 
 /* ================= UTILITIES ================= */
 

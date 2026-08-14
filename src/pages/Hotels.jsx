@@ -13,7 +13,7 @@ import {
 } from "react-icons/fi";
 import "./Hotels.css";
 
-const API = import.meta.env.VITE_API_URL || "https://zyvo-backend-40dg.onrender.com";
+const API = import.meta.env.VITE_API_URL || "https://zyvo-backend-409g.onrender.com";
 const PER_PAGE = 9;
 
 const Hotels = () => {
