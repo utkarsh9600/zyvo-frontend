@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const API = "http://localhost:5000";
+const API = "https://zyvo-backend-40dg.onrender.com";
 
 const formatCurrency = (amount = 0) =>
   new Intl.NumberFormat("en-IN", {

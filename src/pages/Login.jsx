@@ -9,7 +9,7 @@ import { FiMail, FiLock, FiEye, FiEyeOff, FiLogIn } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL || "https://zyvo-backend-40dg.onrender.com";
 
 const Login = () => {
   const [formData, setFormData] = useState({

@@ -15,7 +15,7 @@ import {
   Share2,
 } from "lucide-react";
 
-const API = "http://localhost:5000";
+const API = "https://zyvo-backend-40dg.onrender.com";
 
 const BookingDetails = () => {
   const { id } = useParams();

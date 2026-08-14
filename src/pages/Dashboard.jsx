@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import "./Dashboard.css";
 
-const API = "http://localhost:5000";
+const API = "https://zyvo-backend-40dg.onrender.com";
 
 /* ================= UTILITIES ================= */
 

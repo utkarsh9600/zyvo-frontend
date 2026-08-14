@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Star, Send, AlertCircle, CheckCircle } from "lucide-react";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL || "https://zyvo-backend-40dg.onrender.com";
 
 /* ==========================================================
    STAR RATING COMPONENT

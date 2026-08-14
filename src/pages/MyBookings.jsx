@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PayButton from "../components/payButton";
 
-const API = "http://localhost:5000/api";
+const API = "https://zyvo-backend-40dg.onrender.com/api";
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);

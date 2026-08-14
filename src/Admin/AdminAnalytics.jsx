@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./AdminAnalytics.css";
 
-const API = "http://localhost:5000/api";
+const API = "https://zyvo-backend-40dg.onrender.com/api";
 
 const AdminAnalytics = () => {
   const token = localStorage.getItem("token");

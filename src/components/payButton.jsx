@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const API = "http://localhost:5000/api";
+const API = "https://zyvo-backend-40dg.onrender.com/api";
 
 export default function PayButton({ bookingId, onSuccess }) {
   const [loading, setLoading] = useState(false);

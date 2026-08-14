@@ -71,7 +71,7 @@ const Home = () => {
     const fetchWorldClassHotels = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://localhost:5000/api/hotels?maxPrice=8000&featured=true");
+        const res = await axios.get("https://zyvo-backend-40dg.onrender.com/api/hotels?maxPrice=8000&featured=true");
         const hotels = res.data.hotels.slice(0, 8);
         setFeaturedHotels(hotels);
         setPremiumHotels(hotels.filter(h => h.rating >= 4.2));
