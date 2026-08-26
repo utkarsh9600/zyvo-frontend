@@ -5,6 +5,7 @@ import ReviewSection from "../components/ReviewSection";
 import "./HotelDetails.css";
 
 const API = "https://zyvo-backend-409g.onrender.com";
+const FALLBACK = "/hotel-placeholder.jpg";
 
 /* ================= UTILITIES ================= */
 
@@ -17,10 +18,14 @@ const formatPrice = (value = 0) =>
 
 const calculateNights = (checkIn, checkOut) => {
   if (!checkIn || !checkOut) return 0;
+
   const start = new Date(checkIn);
   const end = new Date(checkOut);
   const diff = end - start;
-  return diff > 0 ? Math.ceil(diff / (1000 * 60 * 60 * 24)) : 0;
+
+  return diff > 0
+    ? Math.ceil(diff / (1000 * 60 * 60 * 24))
+    : 0;
 };
 
 /* ================= COMPONENT ================= */
@@ -69,6 +74,7 @@ const HotelDetails = () => {
             price: hotelData.price || 999,
             available: 5,
           };
+
           setRooms([fallbackRoom]);
           setSelectedRoom("default");
         }
@@ -100,6 +106,7 @@ const HotelDetails = () => {
 
   const totalPrice = useMemo(() => {
     if (!selectedRoomData || nights <= 0) return 0;
+
     return selectedRoomData.price * nights;
   }, [selectedRoomData, nights]);
 
@@ -108,19 +115,24 @@ const HotelDetails = () => {
   const handleBooking = () => {
     if (!token) return navigate("/login");
 
-    if (!checkIn || !checkOut)
-      return alert("Please select dates.");
+    if (!checkIn) {
+      return alert("Please select check-in date.");
+    }
 
-    if (nights <= 0)
+    if (!checkOut) {
+      return alert("Please select check-out date.");
+    }
+
+    if (nights <= 0) {
       return alert("Check-out must be after check-in.");
+    }
 
     navigate(
       `/payment/${hotel._id}?checkIn=${checkIn}&checkOut=${checkOut}&room=${selectedRoom}&total=${totalPrice}`
     );
   };
 
-  const today =
-    new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
 
   /* ================= LOADING ================= */
 
@@ -136,12 +148,20 @@ const HotelDetails = () => {
     return (
       <div className="hotel-details error">
         <h2>{error}</h2>
+
         <button onClick={() => navigate("/hotels")}>
           Back to Hotels
         </button>
       </div>
     );
   }
+
+  const images =
+    hotel.images?.length > 0
+      ? hotel.images
+      : [FALLBACK];
+
+  const mainImage = images[activeImage] || FALLBACK;
 
   /* ================= UI ================= */
 
@@ -151,44 +171,65 @@ const HotelDetails = () => {
       {/* HEADER */}
       <div className="hotel-header">
         <h1>👑 {hotel.name}</h1>
-        <p>📍 {hotel.city}, {hotel.state || "India"}</p>
-        {hotel.rating && <div>⭐ {hotel.rating}</div>}
+
+        <p>
+          📍 {hotel.city}, {hotel.state || "India"}
+        </p>
+
+        {hotel.rating && (
+          <div>⭐ {hotel.rating}</div>
+        )}
       </div>
 
-      {/* GALLERY */}
+      {/* ================= GALLERY ================= */}
+
       <div className="hotel-gallery">
+
+        {/* MAIN / LCP IMAGE */}
         <img
-          src={
-            hotel.images?.[activeImage] ||
-            "/hotel-placeholder.jpg"
-          }
-          alt={hotel.name}
+          src={mainImage}
+          alt={`${hotel.name} main image`}
           className="main-image"
+          width="1200"
+          height="750"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          onError={(e) => {
+            e.currentTarget.src = FALLBACK;
+          }}
           onClick={() => setLightboxOpen(true)}
         />
 
-        {hotel.images?.length > 1 && (
+        {/* THUMBNAILS */}
+        {images.length > 1 && (
           <div className="thumbnail-row">
-            {hotel.images.map((img, index) => (
+            {images.map((img, index) => (
               <img
-                key={index}
+                key={`${img}-${index}`}
                 src={img}
-                alt="thumb"
+                alt={`${hotel.name} thumbnail ${index + 1}`}
                 className={
                   activeImage === index
                     ? "thumb active"
                     : "thumb"
                 }
-                onClick={() =>
-                  setActiveImage(index)
-                }
+                width="160"
+                height="100"
+                loading="lazy"
+                decoding="async"
+                onError={(e) => {
+                  e.currentTarget.src = FALLBACK;
+                }}
+                onClick={() => setActiveImage(index)}
               />
             ))}
           </div>
         )}
       </div>
 
-      {/* LIGHTBOX */}
+      {/* ================= LIGHTBOX ================= */}
+
       {lightboxOpen && (
         <div
           className="lightbox"
@@ -199,15 +240,17 @@ const HotelDetails = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={
-                hotel.images?.[activeImage]
-              }
-              alt="Preview"
+              src={mainImage}
+              alt={`${hotel.name} preview`}
+              width="1200"
+              height="750"
+              decoding="async"
             />
+
             <button
-              onClick={() =>
-                setLightboxOpen(false)
-              }
+              type="button"
+              onClick={() => setLightboxOpen(false)}
+              aria-label="Close image preview"
             >
               ✕
             </button>
@@ -215,51 +258,57 @@ const HotelDetails = () => {
         </div>
       )}
 
-      {/* GRID */}
+      {/* ================= GRID ================= */}
+
       <div className="hotel-grid">
 
         {/* LEFT SIDE */}
         <div className="hotel-left">
+
           <h2>About</h2>
+
           <p>
             {hotel.description ||
               `Premium stay in ${hotel.city} with modern comfort and seamless booking.`}
           </p>
 
           <h2>Amenities</h2>
+
           <div className="amenities">
             {(hotel.amenities || [
               "Free WiFi",
               "AC Rooms",
               "Room Service",
               "24x7 Support",
-            ]).map((item, i) => (
-              <span key={i}>✓ {item}</span>
+            ]).map((item, index) => (
+              <span key={`${item}-${index}`}>
+                ✓ {item}
+              </span>
             ))}
           </div>
 
           <h2>Reviews</h2>
+
           <ReviewSection hotelId={hotel._id} />
         </div>
 
         {/* RIGHT SIDE BOOKING */}
         <div className="hotel-right">
+
           <div className="booking-card">
 
             <div className="price">
               {formatPrice(
-                selectedRoomData?.price ||
-                hotel.price
-              )} / night
+                selectedRoomData?.price || hotel.price
+              )}{" "}
+              / night
             </div>
 
             {rooms.length > 1 && (
               <select
                 value={selectedRoom}
                 onChange={(e) =>
-                  setSelectedRoom(
-                    e.target.value
-                  )
+                  setSelectedRoom(e.target.value)
                 }
               >
                 {rooms.map((room) => (
@@ -268,9 +317,7 @@ const HotelDetails = () => {
                     value={room._id}
                   >
                     {room.type} -{" "}
-                    {formatPrice(
-                      room.price
-                    )}
+                    {formatPrice(room.price)}
                   </option>
                 ))}
               </select>
@@ -281,9 +328,7 @@ const HotelDetails = () => {
               min={today}
               value={checkIn}
               onChange={(e) =>
-                setCheckIn(
-                  e.target.value
-                )
+                setCheckIn(e.target.value)
               }
             />
 
@@ -292,26 +337,25 @@ const HotelDetails = () => {
               min={checkIn || today}
               value={checkOut}
               onChange={(e) =>
-                setCheckOut(
-                  e.target.value
-                )
+                setCheckOut(e.target.value)
               }
               disabled={!checkIn}
             />
 
             {nights > 0 && (
               <div className="summary">
-                <div>Nights: {nights}</div>
                 <div>
-                  Total:{" "}
-                  {formatPrice(
-                    totalPrice
-                  )}
+                  Nights: {nights}
+                </div>
+
+                <div>
+                  Total: {formatPrice(totalPrice)}
                 </div>
               </div>
             )}
 
             <button
+              type="button"
               className="book-btn"
               onClick={handleBooking}
             >
@@ -319,8 +363,8 @@ const HotelDetails = () => {
             </button>
 
             <div className="trust">
-              🔒 Secure Payment  
-              ✅ Free Cancellation  
+              🔒 Secure Payment{" "}
+              ✅ Free Cancellation{" "}
               ⭐ Verified Stay
             </div>
 

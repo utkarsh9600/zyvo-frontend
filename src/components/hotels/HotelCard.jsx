@@ -5,9 +5,12 @@ import "./Hotelcard.css";
 
 const FALLBACK = "/no-image.webp";
 
-const HotelCard = memo(({ hotel }) => {
+const HotelCard = memo(({ hotel, priority = false }) => {
   const navigate = useNavigate();
-  const [src, setSrc] = useState(hotel.images?.[0] || FALLBACK);
+
+  const [src, setSrc] = useState(
+    hotel.images?.[0] || FALLBACK
+  );
 
   const {
     _id,
@@ -25,59 +28,83 @@ const HotelCard = memo(({ hotel }) => {
       ? Math.round(((originalPrice - price) / originalPrice) * 100)
       : 0;
 
+  const handleImageError = () => {
+    if (src !== FALLBACK) {
+      setSrc(FALLBACK);
+    }
+  };
+
+  const handleCardClick = () => {
+    navigate(`/hotels/${_id}`);
+  };
+
   return (
     <article
       className="hotel-card"
-      onClick={() => navigate(`/hotels/${_id}`)}
+      onClick={handleCardClick}
       tabIndex={0}
       role="link"
     >
       <div className="hotel-card__image-wrapper">
         <img
           src={src}
-          alt={name}
+          alt={`${name} hotel`}
           width="400"
           height="250"
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
           decoding="async"
-          onError={() => setSrc(FALLBACK)}
+          onError={handleImageError}
         />
 
         {rating > 0 && (
-          <span className="hotel-card__rating">⭐ {rating}</span>
+          <span className="hotel-card__rating">
+            ⭐ {rating}
+          </span>
         )}
 
         {discount > 0 && (
-          <span className="hotel-card__discount">{discount}% OFF</span>
+          <span className="hotel-card__discount">
+            {discount}% OFF
+          </span>
         )}
       </div>
 
       <div className="hotel-card__content">
         <h3>{name}</h3>
+
         <p>📍 {city}</p>
 
         {amenities.length > 0 && (
           <div className="hotel-card__amenities">
-            {amenities.slice(0, 3).map((a) => (
-              <span key={a}>{a}</span>
+            {amenities.slice(0, 3).map((amenity) => (
+              <span key={amenity}>{amenity}</span>
             ))}
           </div>
         )}
 
         <div className="hotel-card__pricing">
-          <strong>₹{price.toLocaleString("en-IN")}</strong>
+          <strong>
+            ₹{price.toLocaleString("en-IN")}
+          </strong>
+
           {originalPrice > price && (
-            <del>₹{originalPrice.toLocaleString("en-IN")}</del>
+            <del>
+              ₹{originalPrice.toLocaleString("en-IN")}
+            </del>
           )}
         </div>
 
         {availableRooms <= 2 && availableRooms > 0 && (
-          <small>🔥 Only {availableRooms} room left</small>
+          <small>
+            🔥 Only {availableRooms} room left
+          </small>
         )}
 
         <button
-          onClick={(e) => {
-            e.stopPropagation();
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
             navigate(`/hotels/${_id}`);
           }}
         >
@@ -90,6 +117,7 @@ const HotelCard = memo(({ hotel }) => {
 
 HotelCard.propTypes = {
   hotel: PropTypes.object.isRequired,
+  priority: PropTypes.bool,
 };
 
 export default HotelCard;
