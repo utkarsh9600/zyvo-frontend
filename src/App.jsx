@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,21 +11,42 @@ import {
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 
-/* PAGES */
-import Home from "./pages/Home";
-import Hotels from "./pages/Hotels";
-import HotelDetails from "./pages/HotelDetails";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import NotFound from "./pages/NotFound";
+/* PAGES - LAZY LOADED */
+const Home = lazy(() => import("./pages/Home"));
+const Hotels = lazy(() => import("./pages/Hotels"));
+const HotelDetails = lazy(() => import("./pages/HotelDetails"));
 
-import MyBookings from "./pages/MyBookings";
-import BookingDetails from "./pages/BookingDetails";
-import Payment from "./pages/Payment";
-import PaymentSuccess from "./pages/PaymentSuccess";
-import PaymentFailed from "./pages/PaymentFailed";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile";
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+
+const MyBookings = lazy(() => import("./pages/MyBookings"));
+const BookingDetails = lazy(() => import("./pages/BookingDetails"));
+
+const Payment = lazy(() => import("./pages/Payment"));
+const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
+const PaymentFailed = lazy(() => import("./pages/PaymentFailed"));
+
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Profile = lazy(() => import("./pages/Profile"));
+
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+/* ================================
+   LOADING COMPONENT
+================================ */
+
+const PageLoader = () => (
+  <div
+    style={{
+      minHeight: "60vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  >
+    Loading...
+  </div>
+);
 
 /* ================================
    AUTH PROTECTION
@@ -51,81 +72,90 @@ function App() {
     <Router>
       <Navbar />
 
-      <Routes>
-        {/* ================= PUBLIC ROUTES ================= */}
-        <Route path="/" element={<Home />} />
-        <Route path="/hotels" element={<Hotels />} />
-        <Route path="/hotels/:id" element={<HotelDetails />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          {/* ================= PUBLIC ROUTES ================= */}
 
-        {/* ================= PROTECTED ROUTES ================= */}
-        <Route
-          path="/my-bookings"
-          element={
-            <RequireAuth>
-              <MyBookings />
-            </RequireAuth>
-          }
-        />
+          <Route path="/" element={<Home />} />
 
-        <Route
-          path="/booking/:id"
-          element={
-            <RequireAuth>
-              <BookingDetails />
-            </RequireAuth>
-          }
-        />
+          <Route path="/hotels" element={<Hotels />} />
 
-        <Route
-          path="/payment"
-          element={
-            <RequireAuth>
-              <Payment />
-            </RequireAuth>
-          }
-        />
+          <Route path="/hotels/:id" element={<HotelDetails />} />
 
-        <Route
-          path="/payment-success"
-          element={
-            <RequireAuth>
-              <PaymentSuccess />
-            </RequireAuth>
-          }
-        />
+          <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/payment-failed"
-          element={
-            <RequireAuth>
-              <PaymentFailed />
-            </RequireAuth>
-          }
-        />
+          <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/dashboard"
-          element={
-            <RequireAuth>
-              <Dashboard />
-            </RequireAuth>
-          }
-        />
+          {/* ================= PROTECTED ROUTES ================= */}
 
-        <Route
-          path="/profile"
-          element={
-            <RequireAuth>
-              <Profile />
-            </RequireAuth>
-          }
-        />
+          <Route
+            path="/my-bookings"
+            element={
+              <RequireAuth>
+                <MyBookings />
+              </RequireAuth>
+            }
+          />
 
-        {/* ================= 404 ================= */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route
+            path="/booking/:id"
+            element={
+              <RequireAuth>
+                <BookingDetails />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/payment"
+            element={
+              <RequireAuth>
+                <Payment />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/payment-success"
+            element={
+              <RequireAuth>
+                <PaymentSuccess />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/payment-failed"
+            element={
+              <RequireAuth>
+                <PaymentFailed />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAuth>
+                <Dashboard />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/profile"
+            element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            }
+          />
+
+          {/* ================= 404 ================= */}
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
 
       <Footer />
     </Router>
